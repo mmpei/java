@@ -1,0 +1,127 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.6.2
+  creationTimestamp: null
+  name: rmqreplicators.rocketmq.picc.com
+spec:
+  group: rocketmq.picc.com
+  names:
+    kind: RmqReplicator
+    listKind: RmqReplicatorList
+    plural: rmqreplicators
+    singular: rmqreplicator
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: RmqReplicator is the Schema for the rmqreplicators API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: RmqReplicatorSpec defines the desired state of RmqReplicator
+            properties:
+              action:
+                description: Action is the action of the RmqReplicator
+                enum:
+                - create
+                - stop
+                - pause
+                - resume
+                type: string
+              config:
+                additionalProperties:
+                  type: string
+                description: Config is the config of the RmqReplicator
+                type: object
+              routerType:
+                description: RouterType defines the router type of the RmqReplicator
+                enum:
+                - topic
+                - consumerGroup
+                - config
+                type: string
+            required:
+            - action
+            - config
+            - routerType
+            type: object
+          status:
+            description: RmqReplicatorStatus defines the observed state of RmqReplicator
+            properties:
+              connectorStatus:
+                description: ConnectorStatus is the status of the RmqReplicator connector
+                properties:
+                  connector:
+                    properties:
+                      state:
+                        type: string
+                      trace:
+                        type: string
+                      workerId:
+                        type: string
+                    required:
+                    - state
+                    - trace
+                    - workerId
+                    type: object
+                  name:
+                    type: string
+                  tasks:
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                        state:
+                          type: string
+                        trace:
+                          type: string
+                        workerId:
+                          type: string
+                      required:
+                      - id
+                      - state
+                      - trace
+                      - workerId
+                      type: object
+                    type: array
+                  type:
+                    type: string
+                required:
+                - connector
+                - tasks
+                - type
+                type: object
+              phase:
+                description: Phase is the RmqReplicator phase
+                type: string
+            required:
+            - connectorStatus
+            - phase
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
