@@ -6,9 +6,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.6.2
   creationTimestamp: null
-  name: rmqloadbalancers.rocketmq.netease.com
+  name: rmqloadbalancers.rocketmq.picc.com
 spec:
-  group: rocketmq.netease.com
+  group: rocketmq.picc.com
   names:
     kind: RmqLoadBalancer
     listKind: RmqLoadBalancerList
@@ -37,42 +37,65 @@ spec:
             description: RmqLoadBalancerSpec defines the desired state of RmqLoadBalancer
             properties:
               basePort:
-                description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-                  Important: Run "make" to regenerate code after modifying this file
-                  LB base port, default 0'
+                description: BasePort is base port of the Loadbalancer
                 format: int32
                 type: integer
               loadBalanceControllerClass:
-                description: LB controller type, support nlbapi, nlbgw, nseapi, default
-                  nlbgw
+                description: LoadBalanceControllerClass, is the class of the Loadbalancer
+                  controller, default nlbgw
                 enum:
                 - nlbapi
                 - nlbgw
                 - nseapi
                 type: string
               loadBalanceNetworkBandwidth:
-                description: LB bandwidth configuration, default 200 Mbps
+                description: LoadBalanceNetworkBandWidth is the bandwidth of the Loadbalancer,
+                  default 200 Mbps
                 format: int32
                 type: integer
               loadBalanceNetworkType:
-                description: LB network type, supports idc, public and private, default
-                  idc
+                description: LoadBalanceNetworkType is the network type of the Loadbalancer,
+                  default idc
                 enum:
                 - idc
                 - public
                 - private
                 type: string
+              loadBalancerIP:
+                description: 'LoadBalancerIP only applies to Service Type: LoadBalancer.
+                  LoadBalancer will get created with the IP specified in this field.
+                  This feature depends on whether the underlying cloud-provider supports
+                  specifying the loadBalancerIP when a load balancer is created. This
+                  field will be ignored if the cloud-provider does not support the
+                  feature.'
+                type: string
+              propagation:
+                description: Propagation The fields defined by the struct are passed
+                  through to the structs of the child resources, such as label or
+                  annotations
+                properties:
+                  annotations:
+                    additionalProperties:
+                      type: string
+                    description: Annotations specifies the annotations to attach to
+                      pods the operator creates for the rocketmq cluster.
+                    type: object
+                  labels:
+                    additionalProperties:
+                      type: string
+                    description: Labels specifies the labels that will be tagged on
+                      all resources created by RmqCluster
+                    type: object
+                type: object
             type: object
           status:
             description: RmqLoadBalancerStatus defines the observed state of RmqLoadBalancer
             properties:
               lbAddress:
-                description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
-                  of cluster Important: Run "make" to regenerate code after modifying
-                  this file lb access address'
+                description: LbAddress is the address of the Loadbalancer
                 type: string
               phase:
-                description: lb status, healthy, waiting
+                description: Phase is the phase of the Loadbalancer
                 type: string
             required:
             - phase
