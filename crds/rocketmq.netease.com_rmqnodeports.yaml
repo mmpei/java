@@ -6,9 +6,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.6.2
   creationTimestamp: null
-  name: rmqnodeports.rocketmq.netease.com
+  name: rmqnodeports.rocketmq.picc.com
 spec:
-  group: rocketmq.netease.com
+  group: rocketmq.picc.com
   names:
     kind: RmqNodePort
     listKind: RmqNodePortList
@@ -37,7 +37,7 @@ spec:
             description: RmqNodePortSpec defines the desired state of RmqNodePort
             properties:
               backendName:
-                description: rocketmq cluster name
+                description: BackendName is the name of the RmqCluster
                 type: string
             required:
             - backendName
@@ -46,7 +46,7 @@ spec:
             description: RmqNodePortStatus defines the observed state of RmqNodePort
             properties:
               phase:
-                description: NodePort status
+                description: Phase is the RmqNodePort phase
                 type: string
             required:
             - phase
