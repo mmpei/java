@@ -1,0 +1,606 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.6.2
+  creationTimestamp: null
+  name: rmqconnects.rocketmq.picc.com
+spec:
+  group: rocketmq.picc.com
+  names:
+    kind: RmqConnect
+    listKind: RmqConnectList
+    plural: rmqconnects
+    singular: rmqconnect
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: RmqConnect is the Schema for the rmqconnects API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: RmqConnectSpec defines the desired state of RmqConnect
+            properties:
+              connectConfig:
+                additionalProperties:
+                  type: string
+                description: ConnectConfig is the configuration for the Connect instance
+                type: object
+              imagePullRepository:
+                description: ImagePullRepository is rocketmq connect runtime image
+                  to use for the Pods
+                type: string
+              imagePullSecrets:
+                description: ImagePullSecrets is an optional list of references to
+                  secrets in the same namespace to use for pulling any of the images
+                  used by this PodSpec.
+                type: string
+              jvmConfig:
+                description: JvmConfig is the JVM configuration for the Connect instance
+                properties:
+                  xmn:
+                    description: Xmn is the size of the heap for the young generation
+                      of the JVM
+                    type: string
+                  xms:
+                    description: Xms is the initial heap size of the JVM
+                    type: string
+                  xmx:
+                    description: Xmx is the maximum heap size of the JVM
+                    type: string
+                type: object
+              nodeAffinity:
+                description: 'NodeAffinity for pod assignment ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity'
+                properties:
+                  preferredDuringSchedulingIgnoredDuringExecution:
+                    description: The scheduler will prefer to schedule pods to nodes
+                      that satisfy the affinity expressions specified by this field,
+                      but it may choose a node that violates one or more of the expressions.
+                      The node that is most preferred is the one with the greatest
+                      sum of weights, i.e. for each node that meets all of the scheduling
+                      requirements (resource request, requiredDuringScheduling affinity
+                      expressions, etc.), compute a sum by iterating through the elements
+                      of this field and adding "weight" to the sum if the node matches
+                      the corresponding matchExpressions; the node(s) with the highest
+                      sum are the most preferred.
+                    items:
+                      description: An empty preferred scheduling term matches all
+                        objects with implicit weight 0 (i.e. it's a no-op). A null
+                        preferred scheduling term matches no objects (i.e. is also
+                        a no-op).
+                      properties:
+                        preference:
+                          description: A node selector term, associated with the corresponding
+                            weight.
+                          properties:
+                            matchExpressions:
+                              description: A list of node selector requirements by
+                                node's labels.
+                              items:
+                                description: A node selector requirement is a selector
+                                  that contains values, a key, and an operator that
+                                  relates the key and values.
+                                properties:
+                                  key:
+                                    description: The label key that the selector applies
+                                      to.
+                                    type: string
+                                  operator:
+                                    description: Represents a key's relationship to
+                                      a set of values. Valid operators are In, NotIn,
+                                      Exists, DoesNotExist. Gt, and Lt.
+                                    type: string
+                                  values:
+                                    description: An array of string values. If the
+                                      operator is In or NotIn, the values array must
+                                      be non-empty. If the operator is Exists or DoesNotExist,
+                                      the values array must be empty. If the operator
+                                      is Gt or Lt, the values array must have a single
+                                      element, which will be interpreted as an integer.
+                                      This array is replaced during a strategic merge
+                                      patch.
+                                    items:
+                                      type: string
+                                    type: array
+                                required:
+                                - key
+                                - operator
+                                type: object
+                              type: array
+                            matchFields:
+                              description: A list of node selector requirements by
+                                node's fields.
+                              items:
+                                description: A node selector requirement is a selector
+                                  that contains values, a key, and an operator that
+                                  relates the key and values.
+                                properties:
+                                  key:
+                                    description: The label key that the selector applies
+                                      to.
+                                    type: string
+                                  operator:
+                                    description: Represents a key's relationship to
+                                      a set of values. Valid operators are In, NotIn,
+                                      Exists, DoesNotExist. Gt, and Lt.
+                                    type: string
+                                  values:
+                                    description: An array of string values. If the
+                                      operator is In or NotIn, the values array must
+                                      be non-empty. If the operator is Exists or DoesNotExist,
+                                      the values array must be empty. If the operator
+                                      is Gt or Lt, the values array must have a single
+                                      element, which will be interpreted as an integer.
+                                      This array is replaced during a strategic merge
+                                      patch.
+                                    items:
+                                      type: string
+                                    type: array
+                                required:
+                                - key
+                                - operator
+                                type: object
+                              type: array
+                          type: object
+                        weight:
+                          description: Weight associated with matching the corresponding
+                            nodeSelectorTerm, in the range 1-100.
+                          format: int32
+                          type: integer
+                      required:
+                      - preference
+                      - weight
+                      type: object
+                    type: array
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    description: If the affinity requirements specified by this field
+                      are not met at scheduling time, the pod will not be scheduled
+                      onto the node. If the affinity requirements specified by this
+                      field cease to be met at some point during pod execution (e.g.
+                      due to an update), the system may or may not try to eventually
+                      evict the pod from its node.
+                    properties:
+                      nodeSelectorTerms:
+                        description: Required. A list of node selector terms. The
+                          terms are ORed.
+                        items:
+                          description: A null or empty node selector term matches
+                            no objects. The requirements of them are ANDed. The TopologySelectorTerm
+                            type implements a subset of the NodeSelectorTerm.
+                          properties:
+                            matchExpressions:
+                              description: A list of node selector requirements by
+                                node's labels.
+                              items:
+                                description: A node selector requirement is a selector
+                                  that contains values, a key, and an operator that
+                                  relates the key and values.
+                                properties:
+                                  key:
+                                    description: The label key that the selector applies
+                                      to.
+                                    type: string
+                                  operator:
+                                    description: Represents a key's relationship to
+                                      a set of values. Valid operators are In, NotIn,
+                                      Exists, DoesNotExist. Gt, and Lt.
+                                    type: string
+                                  values:
+                                    description: An array of string values. If the
+                                      operator is In or NotIn, the values array must
+                                      be non-empty. If the operator is Exists or DoesNotExist,
+                                      the values array must be empty. If the operator
+                                      is Gt or Lt, the values array must have a single
+                                      element, which will be interpreted as an integer.
+                                      This array is replaced during a strategic merge
+                                      patch.
+                                    items:
+                                      type: string
+                                    type: array
+                                required:
+                                - key
+                                - operator
+                                type: object
+                              type: array
+                            matchFields:
+                              description: A list of node selector requirements by
+                                node's fields.
+                              items:
+                                description: A node selector requirement is a selector
+                                  that contains values, a key, and an operator that
+                                  relates the key and values.
+                                properties:
+                                  key:
+                                    description: The label key that the selector applies
+                                      to.
+                                    type: string
+                                  operator:
+                                    description: Represents a key's relationship to
+                                      a set of values. Valid operators are In, NotIn,
+                                      Exists, DoesNotExist. Gt, and Lt.
+                                    type: string
+                                  values:
+                                    description: An array of string values. If the
+                                      operator is In or NotIn, the values array must
+                                      be non-empty. If the operator is Exists or DoesNotExist,
+                                      the values array must be empty. If the operator
+                                      is Gt or Lt, the values array must have a single
+                                      element, which will be interpreted as an integer.
+                                      This array is replaced during a strategic merge
+                                      patch.
+                                    items:
+                                      type: string
+                                    type: array
+                                required:
+                                - key
+                                - operator
+                                type: object
+                              type: array
+                          type: object
+                        type: array
+                    required:
+                    - nodeSelectorTerms
+                    type: object
+                type: object
+              nodeSelector:
+                additionalProperties:
+                  type: string
+                description: 'NodeSelector is a selector which must be true for the
+                  pod to fit on a node. Selector which must match a node''s labels
+                  for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/'
+                type: object
+              pluginImagePullRepository:
+                description: PluginImagePullRepository is rocketmq connect plugin
+                  image to use for the Pods, like rocketmq-replicator
+                type: string
+              pluginVersion:
+                description: PluginVersion is the rocketmq connect plugin version
+                type: string
+              podTopologySpreadConstraints:
+                description: PodTopologySpreadConstraints is a list of topology spread
+                  constraint settings.
+                properties:
+                  strategy:
+                    type: string
+                type: object
+              propagation:
+                description: Propagation The fields defined by the struct are passed
+                  through to the structs of the child resources, such as label or
+                  annotations
+                properties:
+                  annotations:
+                    additionalProperties:
+                      type: string
+                    description: Annotations specifies the annotations to attach to
+                      pods the operator creates for the rocketmq cluster.
+                    type: object
+                  labels:
+                    additionalProperties:
+                      type: string
+                    description: Labels specifies the labels that will be tagged on
+                      all resources created by RmqCluster
+                    type: object
+                type: object
+              resources:
+                description: Resources describes the compute resource requirements
+                properties:
+                  limits:
+                    additionalProperties:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                      x-kubernetes-int-or-string: true
+                    description: 'Limits describes the maximum amount of compute resources
+                      allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
+                    type: object
+                  requests:
+                    additionalProperties:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                      x-kubernetes-int-or-string: true
+                    description: 'Requests describes the minimum amount of compute
+                      resources required. If Requests is omitted for a container,
+                      it defaults to Limits if that is explicitly specified, otherwise
+                      to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
+                    type: object
+                type: object
+              securityContext:
+                description: SecurityContext is the security context for the Connect
+                  instance
+                properties:
+                  fsGroup:
+                    description: "A special supplemental group that applies to all
+                      containers in a pod. Some volume types allow the Kubelet to
+                      change the ownership of that volume to be owned by the pod:
+                      \n 1. The owning GID will be the FSGroup 2. The setgid bit is
+                      set (new files created in the volume will be owned by FSGroup)
+                      3. The permission bits are OR'd with rw-rw---- \n If unset,
+                      the Kubelet will not modify the ownership and permissions of
+                      any volume."
+                    format: int64
+                    type: integer
+                  fsGroupChangePolicy:
+                    description: 'fsGroupChangePolicy defines behavior of changing
+                      ownership and permission of the volume before being exposed
+                      inside Pod. This field will only apply to volume types which
+                      support fsGroup based ownership(and permissions). It will have
+                      no effect on ephemeral volume types such as: secret, configmaps
+                      and emptydir. Valid values are "OnRootMismatch" and "Always".
+                      If not specified defaults to "Always".'
+                    type: string
+                  runAsGroup:
+                    description: The GID to run the entrypoint of the container process.
+                      Uses runtime default if unset. May also be set in SecurityContext.  If
+                      set in both SecurityContext and PodSecurityContext, the value
+                      specified in SecurityContext takes precedence for that container.
+                    format: int64
+                    type: integer
+                  runAsNonRoot:
+                    description: Indicates that the container must run as a non-root
+                      user. If true, the Kubelet will validate the image at runtime
+                      to ensure that it does not run as UID 0 (root) and fail to start
+                      the container if it does. If unset or false, no such validation
+                      will be performed. May also be set in SecurityContext.  If set
+                      in both SecurityContext and PodSecurityContext, the value specified
+                      in SecurityContext takes precedence.
+                    type: boolean
+                  runAsUser:
+                    description: The UID to run the entrypoint of the container process.
+                      Defaults to user specified in image metadata if unspecified.
+                      May also be set in SecurityContext.  If set in both SecurityContext
+                      and PodSecurityContext, the value specified in SecurityContext
+                      takes precedence for that container.
+                    format: int64
+                    type: integer
+                  seLinuxOptions:
+                    description: The SELinux context to be applied to all containers.
+                      If unspecified, the container runtime will allocate a random
+                      SELinux context for each container.  May also be set in SecurityContext.  If
+                      set in both SecurityContext and PodSecurityContext, the value
+                      specified in SecurityContext takes precedence for that container.
+                    properties:
+                      level:
+                        description: Level is SELinux level label that applies to
+                          the container.
+                        type: string
+                      role:
+                        description: Role is a SELinux role label that applies to
+                          the container.
+                        type: string
+                      type:
+                        description: Type is a SELinux type label that applies to
+                          the container.
+                        type: string
+                      user:
+                        description: User is a SELinux user label that applies to
+                          the container.
+                        type: string
+                    type: object
+                  seccompProfile:
+                    description: The seccomp options to use by the containers in this
+                      pod.
+                    properties:
+                      localhostProfile:
+                        description: localhostProfile indicates a profile defined
+                          in a file on the node should be used. The profile must be
+                          preconfigured on the node to work. Must be a descending
+                          path, relative to the kubelet's configured seccomp profile
+                          location. Must only be set if type is "Localhost".
+                        type: string
+                      type:
+                        description: "type indicates which kind of seccomp profile
+                          will be applied. Valid options are: \n Localhost - a profile
+                          defined in a file on the node should be used. RuntimeDefault
+                          - the container runtime default profile should be used.
+                          Unconfined - no profile should be applied."
+                        type: string
+                    required:
+                    - type
+                    type: object
+                  supplementalGroups:
+                    description: A list of groups applied to the first process run
+                      in each container, in addition to the container's primary GID.  If
+                      unspecified, no groups will be added to any container.
+                    items:
+                      format: int64
+                      type: integer
+                    type: array
+                  sysctls:
+                    description: Sysctls hold a list of namespaced sysctls used for
+                      the pod. Pods with unsupported sysctls (by the container runtime)
+                      might fail to launch.
+                    items:
+                      description: Sysctl defines a kernel parameter to be set
+                      properties:
+                        name:
+                          description: Name of a property to set
+                          type: string
+                        value:
+                          description: Value of a property to set
+                          type: string
+                      required:
+                      - name
+                      - value
+                      type: object
+                    type: array
+                  windowsOptions:
+                    description: The Windows specific settings applied to all containers.
+                      If unspecified, the options within a container's SecurityContext
+                      will be used. If set in both SecurityContext and PodSecurityContext,
+                      the value specified in SecurityContext takes precedence.
+                    properties:
+                      gmsaCredentialSpec:
+                        description: GMSACredentialSpec is where the GMSA admission
+                          webhook (https://github.com/kubernetes-sigs/windows-gmsa)
+                          inlines the contents of the GMSA credential spec named by
+                          the GMSACredentialSpecName field.
+                        type: string
+                      gmsaCredentialSpecName:
+                        description: GMSACredentialSpecName is the name of the GMSA
+                          credential spec to use.
+                        type: string
+                      runAsUserName:
+                        description: The UserName in Windows to run the entrypoint
+                          of the container process. Defaults to the user specified
+                          in image metadata if unspecified. May also be set in PodSecurityContext.
+                          If set in both SecurityContext and PodSecurityContext, the
+                          value specified in SecurityContext takes precedence.
+                        type: string
+                    type: object
+                type: object
+              size:
+                description: Size is the number of the Connect instances
+                format: int32
+                type: integer
+              storageConfig:
+                description: StorageConfig storageClass config
+                properties:
+                  diskSize:
+                    description: DiskSize is the size of the disk to be used for the
+                      claim.
+                    format: int32
+                    minimum: 1
+                    type: integer
+                  storageClassName:
+                    description: Name of the StorageClass required by the claim.
+                    type: string
+                  unit:
+                    description: Unit is the unit of the disk size
+                    enum:
+                    - Gi
+                    - Mi
+                    type: string
+                required:
+                - storageClassName
+                type: object
+              tolerations:
+                description: If specified, the pod's tolerations. The pod this Toleration
+                  is attached to tolerates any taint that matches the triple <key,value,effect>
+                  using the matching operator .
+                items:
+                  description: The pod this Toleration is attached to tolerates any
+                    taint that matches the triple <key,value,effect> using the matching
+                    operator <operator>.
+                  properties:
+                    effect:
+                      description: Effect indicates the taint effect to match. Empty
+                        means match all taint effects. When specified, allowed values
+                        are NoSchedule, PreferNoSchedule and NoExecute.
+                      type: string
+                    key:
+                      description: Key is the taint key that the toleration applies
+                        to. Empty means match all taint keys. If the key is empty,
+                        operator must be Exists; this combination means to match all
+                        values and all keys.
+                      type: string
+                    operator:
+                      description: Operator represents a key's relationship to the
+                        value. Valid operators are Exists and Equal. Defaults to Equal.
+                        Exists is equivalent to wildcard for value, so that a pod
+                        can tolerate all taints of a particular category.
+                      type: string
+                    tolerationSeconds:
+                      description: TolerationSeconds represents the period of time
+                        the toleration (which must be of effect NoExecute, otherwise
+                        this field is ignored) tolerates the taint. By default, it
+                        is not set, which means tolerate the taint forever (do not
+                        evict). Zero and negative values will be treated as 0 (evict
+                        immediately) by the system.
+                      format: int64
+                      type: integer
+                    value:
+                      description: Value is the taint value the toleration matches
+                        to. If the operator is Exists, the value should be empty,
+                        otherwise just a regular string.
+                      type: string
+                  type: object
+                type: array
+              version:
+                description: Version is the rocketmq connect runtime version
+                type: string
+            required:
+            - connectConfig
+            - pluginVersion
+            - resources
+            - storageConfig
+            - version
+            type: object
+          status:
+            description: RmqConnectStatus defines the observed state of RmqConnect
+            properties:
+              nodeStatus:
+                description: NodeStatus is the status of the members of the cluster
+                  with both
+                items:
+                  properties:
+                    kubernetesCluster:
+                      description: KubernetesCluster k8s cluster name where pod running
+                      type: string
+                    podIp:
+                      description: PodIp is the ip of the pod
+                      type: string
+                    podName:
+                      description: PodName is the name of the pod
+                      type: string
+                    podNodeAz:
+                      description: PodNodeAz availability domain to which the Pod
+                        belongs
+                      type: string
+                    podNodeName:
+                      description: PodNodeName the name of the node to which the Pod
+                        belongs
+                      type: string
+                    podPhase:
+                      description: PodPhase is the phase of the pod
+                      type: string
+                    role:
+                      description: Role is the role of the node
+                      type: string
+                    roleNum:
+                      description: RoleNum  referring to Broker Id
+                      type: string
+                  required:
+                  - podName
+                  - podNodeAz
+                  type: object
+                type: array
+              phase:
+                description: Phase is the Connect phase
+                type: string
+              size:
+                description: Size Current number of Connect instances
+                type: integer
+            required:
+            - nodeStatus
+            - phase
+            - size
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
