@@ -1,0 +1,90 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.6.2
+  creationTimestamp: null
+  name: rmqloadbalancers.rocketmq.netease.com
+spec:
+  group: rocketmq.netease.com
+  names:
+    kind: RmqLoadBalancer
+    listKind: RmqLoadBalancerList
+    plural: rmqloadbalancers
+    singular: rmqloadbalancer
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: RmqLoadBalancer is the Schema for the rmqloadbalancers API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: RmqLoadBalancerSpec defines the desired state of RmqLoadBalancer
+            properties:
+              basePort:
+                description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+                  Important: Run "make" to regenerate code after modifying this file
+                  LB base port, default 0'
+                format: int32
+                type: integer
+              loadBalanceControllerClass:
+                description: LB controller type, support nlbapi, nlbgw, nseapi, default
+                  nlbgw
+                enum:
+                - nlbapi
+                - nlbgw
+                - nseapi
+                type: string
+              loadBalanceNetworkBandwidth:
+                description: LB bandwidth configuration, default 200 Mbps
+                format: int32
+                type: integer
+              loadBalanceNetworkType:
+                description: LB network type, supports idc, public and private, default
+                  idc
+                enum:
+                - idc
+                - public
+                - private
+                type: string
+            type: object
+          status:
+            description: RmqLoadBalancerStatus defines the observed state of RmqLoadBalancer
+            properties:
+              lbAddress:
+                description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                  of cluster Important: Run "make" to regenerate code after modifying
+                  this file lb access address'
+                type: string
+              phase:
+                description: lb status, healthy, waiting
+                type: string
+            required:
+            - phase
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
