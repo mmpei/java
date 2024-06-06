@@ -6,9 +6,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.6.2
   creationTimestamp: null
-  name: rmqclusters.rocketmq.netease.com
+  name: rmqclusters.rocketmq.picc.com
 spec:
-  group: rocketmq.netease.com
+  group: rocketmq.picc.com
   names:
     kind: RmqCluster
     listKind: RmqClusterList
@@ -37,13 +37,16 @@ spec:
             description: RmqClusterSpec defines the desired state of RmqCluster
             properties:
               availableZones:
-                description: AvailableZones availableZones deployment related configuration
+                description: AvailableZones defines the set of available domains for
+                  cluster scheduling. If the set is empty, the domain is not restricted
                 items:
                   type: string
                 type: array
               clusterDomain:
+                description: ClusterDomain specify Kubernetes Cluster Domain
                 type: string
               componentNames:
+                description: ComponentNames is subcomponent name of the cluster
                 properties:
                   brokerName:
                     type: string
@@ -65,63 +68,92 @@ spec:
               nodeSelector:
                 additionalProperties:
                   type: string
+                description: NodeSelector specifies the node selector to attach to
+                  pods the operator creates
+                type: object
+              propagation:
+                description: Propagation The fields defined by the struct are passed
+                  through to the structs of the child resources, such as label or
+                  annotations
+                properties:
+                  annotations:
+                    additionalProperties:
+                      type: string
+                    description: Annotations specifies the annotations to attach to
+                      pods the operator creates for the rocketmq cluster.
+                    type: object
+                  labels:
+                    additionalProperties:
+                      type: string
+                    description: Labels specifies the labels that will be tagged on
+                      all resources created by RmqCluster
+                    type: object
                 type: object
               rmqBrokerConfig:
-                description: RmqBrokerSpec defines the desired state of RmqBroker
+                description: RmqBrokerConfig is the configuration of the broker
                 properties:
                   access:
                     description: Access Whether to enable external access, enabled
                       by default
                     type: boolean
                   aclEnabled:
-                    description: AclEnabled whether to enable acl
+                    description: AclEnabled Whether to enable ACL
                     type: boolean
                   brokerConfig:
-                    description: BrokerConfig broker config file param
+                    description: BrokerConfig is the broker configuration for the
+                      broker
                     properties:
                       autoCreateSubscriptionGroup:
-                        description: Whether to automatically create a Group
+                        description: AutoCreateSubscriptionGroup Whether to automatically
+                          create a Group
                         type: string
                       autoCreateTopicEnable:
-                        description: Whether to automatically create a topic
+                        description: AutoCreateTopicEnable Whether to automatically
+                          create a topic
                         type: string
                       brokerRole:
-                        description: Replication mode between master and slave
+                        description: BrokerRole Replication mode between master and
+                          slave
                         enum:
                         - ASYNC_MASTER
                         - SYNC_MASTER
                         type: string
                       deleteWhen:
-                        description: Storage file cleanup time
+                        description: DeleteWhen Storage file cleanup time
                         type: string
                       enableBatchPush:
-                        description: Whether to enable Dledger batch submission
+                        description: EnableBatchPush Whether to enable Dledger batch
+                          submission
                         type: string
                       fileReservedTime:
-                        description: 'How long the storage file is kept, unit: h'
+                        description: 'FileReservedTime How long the storage file is
+                          kept, unit: h'
                         type: string
                       flushDiskType:
-                        description: Flash mode, ASYNC_FLUSH asynchronous flash or
-                          SYNC_FLUSH synchronous flash
+                        description: FlushDiskType Flash mode, ASYNC_FLUSH asynchronous
+                          flash or SYNC_FLUSH synchronous flash
                         enum:
                         - ASYNC_FLUSH
                         - SYNC_FLUSH
                         type: string
                       messageDelayLevel:
-                        description: Delay message level configuration, default is
-                          1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h
-                          2h
+                        description: MessageDelayLevel Delay message level configuration,
+                          default is 1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m
+                          20m 30m 1h 2h
                         type: string
                       rejectTransactionMessage:
-                        description: whether to reject transaction messages
+                        description: RejectTransactionMessage whether to reject transaction
+                          messages
                         type: string
                       sendMessageThreadPoolNums:
-                        description: Maximum number of threads to send messages
+                        description: SendMessageThreadPoolNums Maximum number of threads
+                          to send messages
                         type: string
                       waitTimeMillsInSendQueue:
-                        description: The number of milliseconds that the Broker stays
-                          in the sending queue, the timeout will return the producer
-                          to send failure, the default is 200 ms
+                        description: WaitTimeMillsInSendQueue The number of milliseconds
+                          that the Broker stays in the sending queue, the timeout
+                          will return the producer to send failure, the default is
+                          200 ms
                         type: string
                     type: object
                   clusterType:
@@ -138,7 +170,7 @@ spec:
                     - HA
                     type: string
                   hostPath:
-                    description: HostPath is the local path to store data
+                    description: HostPath is the path of the hostPath
                     type: string
                   imagePullRepository:
                     description: ImagePullRepository is the broker image to use for
@@ -150,16 +182,17 @@ spec:
                       images used by this PodSpec.
                     type: string
                   jvmConfig:
-                    description: JvmConfig broker jvm config
+                    description: JvmConfig is the JVM configuration for the broker
                     properties:
                       xmn:
-                        description: young generation
+                        description: Xmn is the size of the heap for the young generation
+                          of the JVM
                         type: string
                       xms:
-                        description: min heap
+                        description: Xms is the initial heap size of the JVM
                         type: string
                       xmx:
-                        description: max heap
+                        description: Xmx is the maximum heap size of the JVM
                         type: string
                     type: object
                   messageTraceConfig:
@@ -170,13 +203,14 @@ spec:
                         description: JvmConfig broker jvm config
                         properties:
                           xmn:
-                            description: young generation
+                            description: Xmn is the size of the heap for the young
+                              generation of the JVM
                             type: string
                           xms:
-                            description: min heap
+                            description: Xms is the initial heap size of the JVM
                             type: string
                           xmx:
-                            description: max heap
+                            description: Xmx is the maximum heap size of the JVM
                             type: string
                         type: object
                       resources:
@@ -214,11 +248,20 @@ spec:
                         description: StorageConfig storageClass config
                         properties:
                           diskSize:
-                            description: disk size default=10
+                            description: DiskSize is the size of the disk to be used
+                              for the claim.
                             format: int32
-                            minimum: 10
+                            minimum: 1
                             type: integer
                           storageClassName:
+                            description: Name of the StorageClass required by the
+                              claim.
+                            type: string
+                          unit:
+                            description: Unit is the unit of the disk size
+                            enum:
+                            - Gi
+                            - Mi
                             type: string
                         required:
                         - storageClassName
@@ -232,7 +275,7 @@ spec:
                     description: MessageTraceEnabled Whether to enable message trace
                     type: boolean
                   nodeAffinity:
-                    description: NodeAffinity affinity
+                    description: 'NodeAffinity for pod assignment ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity'
                     properties:
                       preferredDuringSchedulingIgnoredDuringExecution:
                         description: The scheduler will prefer to schedule pods to
@@ -437,14 +480,34 @@ spec:
                   nodeSelector:
                     additionalProperties:
                       type: string
-                    description: NodeSelector nodeSelector
+                    description: 'NodeSelector is a selector which must be true for
+                      the pod to fit on a node. Selector which must match a node''s
+                      labels for the pod to be scheduled on that node. More info:
+                      https://kubernetes.io/docs/concepts/configuration/assign-pod-node/'
+                    type: object
+                  podTopologySpreadConstraints:
+                    description: PodTopologySpreadConstraints is a list of topology
+                      spread constraint settings.
+                    properties:
+                      strategy:
+                        type: string
+                    type: object
+                  preferredLeader:
+                    description: PreferredLeader can configure a preferredLeaderId
+                      to select a node as the Leader.
+                    properties:
+                      enabled:
+                        description: Enabled Whether to enable preferred leader
+                        type: boolean
+                    required:
+                    - enabled
                     type: object
                   replicaPerGroup:
                     description: ReplicaPerGroup each broker cluster's replica number
                     minimum: 0
                     type: integer
                   resources:
-                    description: Resources describes the compute resource requirements
+                    description: Resources describes the compute resource requirements.
                     properties:
                       limits:
                         additionalProperties:
@@ -470,7 +533,8 @@ spec:
                         type: object
                     type: object
                   securityContext:
-                    description: SecurityContext pod security context
+                    description: SecurityContext is the security context for the broker
+                      pod
                     properties:
                       fsGroup:
                         description: "A special supplemental group that applies to
@@ -617,25 +681,41 @@ spec:
                         type: object
                     type: object
                   size:
+                    description: Size is the desired sharding of replicas of the given
+                      Template's pods.
                     type: integer
                   storageConfig:
-                    description: StorageConfig storageClass config
+                    description: StorageConfig is the storageClass config
                     properties:
                       diskSize:
-                        description: disk size default=10
+                        description: DiskSize is the size of the disk to be used for
+                          the claim.
                         format: int32
-                        minimum: 10
+                        minimum: 1
                         type: integer
                       storageClassName:
+                        description: Name of the StorageClass required by the claim.
+                        type: string
+                      unit:
+                        description: Unit is the unit of the disk size
+                        enum:
+                        - Gi
+                        - Mi
                         type: string
                     required:
                     - storageClassName
                     type: object
                   storageMode:
                     description: StorageMode can be EmptyDir, HostPath, StorageClass
+                    enum:
+                    - EmptyDir
+                    - HostPath
+                    - StorageClass
                     type: string
                   tolerations:
-                    description: Tolerations toleration
+                    description: If specified, the pod's tolerations. The pod this
+                      Toleration is attached to tolerates any taint that matches the
+                      triple <key,value,effect> using the matching operator .
                     items:
                       description: The pod this Toleration is attached to tolerates
                         any taint that matches the triple <key,value,effect> using
@@ -676,22 +756,23 @@ spec:
                       type: object
                     type: array
                   version:
-                    description: Version image version
+                    description: Version is the version of the broker
                     type: string
                 required:
                 - access
-                - imagePullRepository
+                - electionMode
                 - replicaPerGroup
                 - resources
                 - size
                 - storageConfig
+                - storageMode
                 - version
                 type: object
               rmqConsoleConfig:
-                description: RmqConsoleSpec defines the desired state of RmqConsole
+                description: RmqConsoleConfig is the configuration of the console
                 properties:
                   imagePullRepository:
-                    description: ImagePullRepository is the broker image to use for
+                    description: ImagePullRepository is the console image to use for
                       the Pods
                     type: string
                   imagePullSecrets:
@@ -700,7 +781,7 @@ spec:
                       images used by this PodSpec.
                     type: string
                   nodeAffinity:
-                    description: NodeAffinity Affinity
+                    description: 'NodeAffinity for pod assignment ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity'
                     properties:
                       preferredDuringSchedulingIgnoredDuringExecution:
                         description: The scheduler will prefer to schedule pods to
@@ -905,10 +986,13 @@ spec:
                   nodeSelector:
                     additionalProperties:
                       type: string
-                    description: NodeSelector Node selection
+                    description: 'NodeSelector is a selector which must be true for
+                      the pod to fit on a node. Selector which must match a node''s
+                      labels for the pod to be scheduled on that node. More info:
+                      https://kubernetes.io/docs/concepts/configuration/assign-pod-node/'
                     type: object
                   resources:
-                    description: Resources resource
+                    description: Resources describes the compute resource requirements.
                     properties:
                       limits:
                         additionalProperties:
@@ -934,13 +1018,14 @@ spec:
                         type: object
                     type: object
                   size:
-                    description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of
-                      cluster Important: Run "make" to regenerate code after modifying
-                      this file Size'
+                    description: Size is the desired number of replicas of the given
+                      Template's pods.
                     format: int32
                     type: integer
                   tolerations:
-                    description: Tolerations tolerance
+                    description: If specified, the pod's tolerations. The pod this
+                      Toleration is attached to tolerates any taint that matches the
+                      triple <key,value,effect> using the matching operator .
                     items:
                       description: The pod this Toleration is attached to tolerates
                         any taint that matches the triple <key,value,effect> using
@@ -981,21 +1066,21 @@ spec:
                       type: object
                     type: array
                   version:
-                    description: Version image version
+                    description: Version is the console image version
                     type: string
                 required:
-                - imagePullRepository
                 - version
                 type: object
               rmqExporterConfig:
-                description: RmqExporterSpec defines the desired state of RmqExporter
+                description: RmqExporterConfig is the configuration of the exporter
                 properties:
                   consoleAddress:
-                    description: 'ConsoleAddress consoleUrl format: {consoleSvcName}:{port}'
+                    description: 'ConsoleAddress consoleUrl format: {consoleSvcName}:{port}
+                      Deprecated'
                     type: string
                   imagePullRepository:
-                    description: ImagePullRepository is the broker image to use for
-                      the Pods
+                    description: ImagePullRepository is the exporter image to use
+                      for the Pods
                     type: string
                   imagePullSecrets:
                     description: ImagePullSecrets is an optional list of references
@@ -1003,7 +1088,7 @@ spec:
                       images used by this PodSpec.
                     type: string
                   nodeAffinity:
-                    description: NodeAffinity affinity
+                    description: 'NodeAffinity for pod assignment ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity'
                     properties:
                       preferredDuringSchedulingIgnoredDuringExecution:
                         description: The scheduler will prefer to schedule pods to
@@ -1208,10 +1293,13 @@ spec:
                   nodeSelector:
                     additionalProperties:
                       type: string
-                    description: NodeSelector nodeSelector
+                    description: 'NodeSelector is a selector which must be true for
+                      the pod to fit on a node. Selector which must match a node''s
+                      labels for the pod to be scheduled on that node. More info:
+                      https://kubernetes.io/docs/concepts/configuration/assign-pod-node/'
                     type: object
                   resources:
-                    description: Resources resource
+                    description: Resources describes the compute resource requirements.
                     properties:
                       limits:
                         additionalProperties:
@@ -1237,11 +1325,14 @@ spec:
                         type: object
                     type: object
                   size:
-                    description: Size
+                    description: Size is the desired number of replicas of the given
+                      Template's pods.
                     format: int32
                     type: integer
                   tolerations:
-                    description: Tolerations toleration
+                    description: If specified, the pod's tolerations. The pod this
+                      Toleration is attached to tolerates any taint that matches the
+                      triple <key,value,effect> using the matching operator .
                     items:
                       description: The pod this Toleration is attached to tolerates
                         any taint that matches the triple <key,value,effect> using
@@ -1282,19 +1373,17 @@ spec:
                       type: object
                     type: array
                   version:
-                    description: Version image version
+                    description: Version is the exporter image version
                     type: string
                 required:
-                - consoleAddress
-                - imagePullRepository
                 - version
                 type: object
               rmqHttpSiteConfig:
-                description: RmqHttpsiteSpec defines the desired state of RmqHttpsite
+                description: RmqHttpSiteConfig is the configuration of the httpsite
                 properties:
                   imagePullRepository:
-                    description: ImagePullRepository is the broker image to use for
-                      the Pods
+                    description: ImagePullRepository is the httpsite image to use
+                      for the Pods
                     type: string
                   imagePullSecrets:
                     description: ImagePullSecrets is an optional list of references
@@ -1307,11 +1396,11 @@ spec:
                     type: string
                   nameServerLoadBalanceAddress:
                     description: 'NameServerLoadBalanceAddress The LB address of the
-                      Name Server, automatically generated, in the format: {lb ip}:port
-                      1,{lb ip}:port 2,{lb ip}:port 3'
+                      NameServer, automatically generated, format: {lb ip}:port 1,{lb
+                      ip}:port 2,{lb ip}:port 3'
                     type: string
                   nodeAffinity:
-                    description: NodeAffinity affinity
+                    description: 'NodeAffinity for pod assignment ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity'
                     properties:
                       preferredDuringSchedulingIgnoredDuringExecution:
                         description: The scheduler will prefer to schedule pods to
@@ -1516,10 +1605,13 @@ spec:
                   nodeSelector:
                     additionalProperties:
                       type: string
-                    description: NodeSelector nodeSelector
+                    description: 'NodeSelector is a selector which must be true for
+                      the pod to fit on a node. Selector which must match a node''s
+                      labels for the pod to be scheduled on that node. More info:
+                      https://kubernetes.io/docs/concepts/configuration/assign-pod-node/'
                     type: object
                   resources:
-                    description: Resources resource
+                    description: Resources describes the compute resource requirements.
                     properties:
                       limits:
                         additionalProperties:
@@ -1545,11 +1637,14 @@ spec:
                         type: object
                     type: object
                   size:
-                    description: Size
+                    description: Size is the desired number of replicas of the given
+                      Template's pods.
                     format: int32
                     type: integer
                   tolerations:
-                    description: Tolerations toleration
+                    description: If specified, the pod's tolerations. The pod this
+                      Toleration is attached to tolerates any taint that matches the
+                      triple <key,value,effect> using the matching operator .
                     items:
                       description: The pod this Toleration is attached to tolerates
                         any taint that matches the triple <key,value,effect> using
@@ -1590,22 +1685,20 @@ spec:
                       type: object
                     type: array
                   version:
-                    description: Version image version
+                    description: Version is the httpsite image version
                     type: string
                 required:
-                - imagePullRepository
-                - nameServerHeadlessAddress
                 - version
                 type: object
               rmqNameSrvConfig:
-                description: RmqNameserverSpec defines the desired state of RmqNameserver
+                description: RmqNameSrvConfig is the configuration of the nameserver
                 properties:
                   hostPath:
-                    description: HostPath is the local path to store data
+                    description: HostPath is the path of the hostPath
                     type: string
                   imagePullRepository:
-                    description: NameServiceImage is the name service image ImagePullRepository
-                      is the broker image to use for the Pods
+                    description: ImagePullRepository is the nameserver image to use
+                      for the Pods
                     type: string
                   imagePullSecrets:
                     description: ImagePullSecrets is an optional list of references
@@ -1613,20 +1706,21 @@ spec:
                       images used by this PodSpec.
                     type: string
                   jvmConfig:
-                    description: JvmConfig jvm config
+                    description: JvmConfig is the JVM configuration for the nameserver
                     properties:
                       xmn:
-                        description: young generation
+                        description: Xmn is the size of the heap for the young generation
+                          of the JVM
                         type: string
                       xms:
-                        description: min heap
+                        description: Xms is the initial heap size of the JVM
                         type: string
                       xmx:
-                        description: max heap
+                        description: Xmx is the maximum heap size of the JVM
                         type: string
                     type: object
                   nodeAffinity:
-                    description: NodeAffinity 节点亲和性
+                    description: 'NodeAffinity for pod assignment ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity'
                     properties:
                       preferredDuringSchedulingIgnoredDuringExecution:
                         description: The scheduler will prefer to schedule pods to
@@ -1831,10 +1925,20 @@ spec:
                   nodeSelector:
                     additionalProperties:
                       type: string
-                    description: NodeSelector 节点选择
+                    description: 'NodeSelector is a selector which must be true for
+                      the pod to fit on a node. Selector which must match a node''s
+                      labels for the pod to be scheduled on that node. More info:
+                      https://kubernetes.io/docs/concepts/configuration/assign-pod-node/'
+                    type: object
+                  podTopologySpreadConstraints:
+                    description: PodTopologySpreadConstraints is a list of topology
+                      spread constraint settings.
+                    properties:
+                      strategy:
+                        type: string
                     type: object
                   resources:
-                    description: Resources describes the compute resource requirements
+                    description: Resources describes the compute resource requirements.
                     properties:
                       limits:
                         additionalProperties:
@@ -1860,7 +1964,8 @@ spec:
                         type: object
                     type: object
                   securityContext:
-                    description: SecurityContext pod security context
+                    description: SecurityContext is the security context for the broker
+                      pod
                     properties:
                       fsGroup:
                         description: "A special supplemental group that applies to
@@ -2007,28 +2112,42 @@ spec:
                         type: object
                     type: object
                   size:
-                    description: Foo is an example field of RmqNameserver. Edit rmqnameserver_types.go
-                      to remove/update
+                    description: Size is the desired number of replicas of the given
+                      Template's pods.
                     format: int32
                     type: integer
                   storageConfig:
-                    description: StorageConfig storageClass config
+                    description: StorageConfig is the storageClass config
                     properties:
                       diskSize:
-                        description: disk size default=10
+                        description: DiskSize is the size of the disk to be used for
+                          the claim.
                         format: int32
-                        minimum: 10
+                        minimum: 1
                         type: integer
                       storageClassName:
+                        description: Name of the StorageClass required by the claim.
+                        type: string
+                      unit:
+                        description: Unit is the unit of the disk size
+                        enum:
+                        - Gi
+                        - Mi
                         type: string
                     required:
                     - storageClassName
                     type: object
                   storageMode:
                     description: StorageMode can be EmptyDir, HostPath, StorageClass
+                    enum:
+                    - EmptyDir
+                    - HostPath
+                    - StorageClass
                     type: string
                   tolerations:
-                    description: Tolerations 容忍
+                    description: If specified, the pod's tolerations. The pod this
+                      Toleration is attached to tolerates any taint that matches the
+                      triple <key,value,effect> using the matching operator .
                     items:
                       description: The pod this Toleration is attached to tolerates
                         any taint that matches the triple <key,value,effect> using
@@ -2069,13 +2188,12 @@ spec:
                       type: object
                     type: array
                   version:
-                    description: Version image version
+                    description: Version is the nameserver image version
                     type: string
                 required:
-                - imagePullRepository
                 - resources
-                - size
                 - storageConfig
+                - storageMode
                 - version
                 type: object
             required:
@@ -2092,17 +2210,25 @@ spec:
             description: RmqClusterStatus defines the observed state of RmqCluster
             properties:
               brokerStatus:
-                description: RmqBrokerStatus defines the observed state of RmqBroker
+                description: RmqBrokerStatus is the status of the broker
                 properties:
+                  federatePhase:
+                    description: FederatePhase is the current state of the federate
+                      cluster
+                    type: string
                   nodeStatus:
-                    description: Cluster Node Information
+                    description: NodeStatus is the status of the broker nodes
                     items:
                       properties:
+                        kubernetesCluster:
+                          description: KubernetesCluster k8s cluster name where pod
+                            running
+                          type: string
                         podIp:
-                          description: PodIp pod ip address
+                          description: PodIp is the ip of the pod
                           type: string
                         podName:
-                          description: PodName pod name
+                          description: PodName is the name of the pod
                           type: string
                         podNodeAz:
                           description: PodNodeAz availability domain to which the
@@ -2113,10 +2239,10 @@ spec:
                             Pod belongs
                           type: string
                         podPhase:
-                          description: PodPhase pod phase
+                          description: PodPhase is the phase of the pod
                           type: string
                         role:
-                          description: Role pod role
+                          description: Role is the role of the node
                           type: string
                         roleNum:
                           description: RoleNum  referring to Broker Id
@@ -2127,12 +2253,10 @@ spec:
                       type: object
                     type: array
                   phase:
-                    description: 'INSERT ADDITIONAL STATUS FIELD - define observed
-                      state of cluster Important: Run "make" to regenerate code after
-                      modifying this file cluster status'
+                    description: Phase is the current state of the cluster
                     type: string
                   size:
-                    description: Current number of Broker instances
+                    description: Size Current number of Broker instances
                     type: integer
                 required:
                 - nodeStatus
@@ -2140,17 +2264,25 @@ spec:
                 - size
                 type: object
               consoleStatus:
-                description: RmqConsoleStatus defines the observed state of RmqConsole
+                description: RmqConsoleStatus is the status of the console
                 properties:
+                  federatePhase:
+                    description: FederatePhase is the current state of the console
+                      federate
+                    type: string
                   nodeStatus:
-                    description: Cluster Node Information
+                    description: NodeStatus is the current state of the console node
                     items:
                       properties:
+                        kubernetesCluster:
+                          description: KubernetesCluster k8s cluster name where pod
+                            running
+                          type: string
                         podIp:
-                          description: PodIp pod ip address
+                          description: PodIp is the ip of the pod
                           type: string
                         podName:
-                          description: PodName pod name
+                          description: PodName is the name of the pod
                           type: string
                         podNodeAz:
                           description: PodNodeAz availability domain to which the
@@ -2161,10 +2293,10 @@ spec:
                             Pod belongs
                           type: string
                         podPhase:
-                          description: PodPhase pod phase
+                          description: PodPhase is the phase of the pod
                           type: string
                         role:
-                          description: Role pod role
+                          description: Role is the role of the node
                           type: string
                         roleNum:
                           description: RoleNum  referring to Broker Id
@@ -2175,12 +2307,10 @@ spec:
                       type: object
                     type: array
                   phase:
-                    description: 'INSERT ADDITIONAL STATUS FIELD - define observed
-                      state of cluster Important: Run "make" to regenerate code after
-                      modifying this file status'
+                    description: Phase is the current state of the console
                     type: string
                   size:
-                    description: Current number of Console instances
+                    description: Size Current number of Console instances
                     type: integer
                 required:
                 - nodeStatus
@@ -2188,17 +2318,25 @@ spec:
                 - size
                 type: object
               exporterStatus:
-                description: RmqExporterStatus defines the observed state of RmqExporter
+                description: RmqExporterStatus is the status of the exporter
                 properties:
+                  federatePhase:
+                    description: FederatePhase is the current state of the exporter
+                      federate
+                    type: string
                   nodeStatus:
-                    description: Cluster Node Information
+                    description: NodeStatus is the current state of the exporter node
                     items:
                       properties:
+                        kubernetesCluster:
+                          description: KubernetesCluster k8s cluster name where pod
+                            running
+                          type: string
                         podIp:
-                          description: PodIp pod ip address
+                          description: PodIp is the ip of the pod
                           type: string
                         podName:
-                          description: PodName pod name
+                          description: PodName is the name of the pod
                           type: string
                         podNodeAz:
                           description: PodNodeAz availability domain to which the
@@ -2209,10 +2347,10 @@ spec:
                             Pod belongs
                           type: string
                         podPhase:
-                          description: PodPhase pod phase
+                          description: PodPhase is the phase of the pod
                           type: string
                         role:
-                          description: Role pod role
+                          description: Role is the role of the node
                           type: string
                         roleNum:
                           description: RoleNum  referring to Broker Id
@@ -2223,28 +2361,39 @@ spec:
                       type: object
                     type: array
                   phase:
-                    description: exporter status
+                    description: Phase is the current state of the exporter
                     type: string
                   size:
-                    description: The current number of Rmq Exporter instances
+                    description: Size The current number of Rmq Exporter instances
                     type: integer
                 required:
                 - nodeStatus
                 - phase
                 - size
                 type: object
+              federatePhase:
+                description: FederatePhase is the status of the federate cluster
+                type: string
               httpSiteStatus:
-                description: RmqHttpsiteStatus defines the observed state of RmqHttpsite
+                description: RmqConsoleStatus is the status of the console
                 properties:
+                  federatePhase:
+                    description: FederatePhase is the current state of the httpsite
+                      federate
+                    type: string
                   nodeStatus:
-                    description: Cluster Node Information
+                    description: NodeStatus is the current state of the httpsite node
                     items:
                       properties:
+                        kubernetesCluster:
+                          description: KubernetesCluster k8s cluster name where pod
+                            running
+                          type: string
                         podIp:
-                          description: PodIp pod ip address
+                          description: PodIp is the ip of the pod
                           type: string
                         podName:
-                          description: PodName pod name
+                          description: PodName is the name of the pod
                           type: string
                         podNodeAz:
                           description: PodNodeAz availability domain to which the
@@ -2255,10 +2404,10 @@ spec:
                             Pod belongs
                           type: string
                         podPhase:
-                          description: PodPhase pod phase
+                          description: PodPhase is the phase of the pod
                           type: string
                         role:
-                          description: Role pod role
+                          description: Role is the role of the node
                           type: string
                         roleNum:
                           description: RoleNum  referring to Broker Id
@@ -2269,12 +2418,10 @@ spec:
                       type: object
                     type: array
                   phase:
-                    description: 'INSERT ADDITIONAL STATUS FIELD - define observed
-                      state of cluster Important: Run "make" to regenerate code after
-                      modifying this file status'
+                    description: Phase is the current state of the httpsite
                     type: string
                   size:
-                    description: The current number of Httpsite instances
+                    description: Size The current number of Httpsite instances
                     type: integer
                 required:
                 - nodeStatus
@@ -2282,26 +2429,31 @@ spec:
                 - size
                 type: object
               namesrvStatus:
-                description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
-                  of cluster Important: Run "make" to regenerate code after modifying
-                  this file'
+                description: RmqNameserverStatus is the status of the nameserver
                 properties:
+                  federatePhase:
+                    description: FederatePhase is the current state of the nameserver
+                      federate
+                    type: string
                   nameServers:
-                    description: 'INSERT ADDITIONAL STATUS FIELD - define observed
-                      state of cluster Important: Run "make" to regenerate code after
-                      modifying this file'
+                    description: NameServers is the nameserver address
                     items:
                       type: string
                     type: array
                   nodeStatus:
-                    description: Cluster Node Information
+                    description: NodeStatus is the current state of the nameserver
+                      node
                     items:
                       properties:
+                        kubernetesCluster:
+                          description: KubernetesCluster k8s cluster name where pod
+                            running
+                          type: string
                         podIp:
-                          description: PodIp pod ip address
+                          description: PodIp is the ip of the pod
                           type: string
                         podName:
-                          description: PodName pod name
+                          description: PodName is the name of the pod
                           type: string
                         podNodeAz:
                           description: PodNodeAz availability domain to which the
@@ -2312,10 +2464,10 @@ spec:
                             Pod belongs
                           type: string
                         podPhase:
-                          description: PodPhase pod phase
+                          description: PodPhase is the phase of the pod
                           type: string
                         role:
-                          description: Role pod role
+                          description: Role is the role of the node
                           type: string
                         roleNum:
                           description: RoleNum  referring to Broker Id
@@ -2326,7 +2478,7 @@ spec:
                       type: object
                     type: array
                   phase:
-                    description: status
+                    description: Phase is the current state of the nameserver
                     type: string
                 required:
                 - nameServers
@@ -2334,7 +2486,7 @@ spec:
                 - phase
                 type: object
               phase:
-                description: Cluster status
+                description: Phase is the status of the cluster
                 type: string
             required:
             - phase
